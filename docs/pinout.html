@@ -237,18 +237,14 @@
                     </style>
                 </defs>
                 <text x="450" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#00ff66">ESP-Hunter Pinout Diagram</text>
-                <rect x="320" y="250" width="260" height="150" rx="5" class="box" />
-                <text x="450" y="285" text-anchor="middle" class="module-title">ESP32-S3</text>
-                <text x="450" y="305" text-anchor="middle" fill="#808080" font-size="10">Dual-Core LX7</text>
-                <text x="330" y="340" class="pin-label">3.3V</text>
-                <text x="330" y="360" class="pin-label">GND</text>
-                <circle cx="315" cy="340" r="3" class="pin-dot" />
-                <circle cx="315" cy="360" r="3" class="pin-dot" />
-                <text x="565" y="340" class="pin-label">3.3V</text>
-                <text x="565" y="360" class="pin-label">GND</text>
-                <circle cx="585" cy="340" r="3" class="pin-dot" />
-                <circle cx="585" cy="360" r="3" class="pin-dot" />
-                <rect x="50" y="100" width="180" height="120" rx="5" class="box" />
+                <rect x="375" y="100" width="150" height="350" rx="5" class="box" />
+                <rect x="400" y="65" width="100" height="35" rx="5" class="box" />
+                <rect x="390" y="415" width="45" height="35" rx="5" class="box" />
+                <rect x="465" y="415" width="45" height="35" rx="5" class="box" />
+                <text x="450" y="120" text-anchor="middle" class="module-title">ESP32-S3</text>
+                <text x="450" y="140" text-anchor="middle" fill="#808080" font-size="10">Dual-Core LX7</text>
+
+                <rect x="50" y="100" width="180" height="180" rx="5" class="box" />
                 <text x="140" y="130" text-anchor="middle" class="module-title">TFT ST7735</text>
                 <text x="140" y="150" text-anchor="middle" fill="#808080" font-size="10">128x128 SPI</text>
                 <text x="60" y="175" class="pin-label">SCK → 12</text>
@@ -262,11 +258,18 @@
                 <line x1="230" y1="215" x2="320" y2="215" class="line" />
                 <line x1="230" y1="235" x2="320" y2="235" class="line" />
                 <line x1="230" y1="255" x2="320" y2="255" class="line" />
-                <rect x="50" y="450" width="180" height="80" rx="5" class="box" />
-                <text x="140" y="475" text-anchor="middle" class="module-title">MicroSD</text>
-                <text x="140" y="495" text-anchor="middle" fill="#808080" font-size="10">SPI</text>
-                <text x="60" y="520" class="pin-label">CS → 15</text>
-                <line x1="230" y1="520" x2="320" y2="520" class="line" />
+                <line x1="230" y1="275" x2="320" y2="275" class="line" />
+                <rect x="50" y="350" width="180" height="140" rx="5" class="box" />
+                <text x="140" y="375" text-anchor="middle" class="module-title">MicroSD</text>
+                <text x="140" y="395" text-anchor="middle" fill="#808080" font-size="10">SPI</text>
+                <text x="60" y="420" class="pin-label">CS → 15</text>
+                <text x="60" y="440" class="pin-label">SCK → 12</text>
+                <text x="60" y="460" class="pin-label">MOSI → 11</text>
+                <text x="60" y="480" class="pin-label">MISO → 13</text>
+                <line x1="230" y1="420" x2="320" y2="420" class="line" />
+                <line x1="230" y1="440" x2="320" y2="440" class="line" />
+                <line x1="230" y1="460" x2="320" y2="460" class="line" />
+                <line x1="230" y1="480" x2="320" y2="480" class="line" />
                 <rect x="640" y="100" width="180" height="100" rx="5" class="box" />
                 <text x="730" y="130" text-anchor="middle" class="module-title">PN532</text>
                 <text x="730" y="150" text-anchor="middle" fill="#808080" font-size="10">RFID I2C</text>
@@ -275,26 +278,27 @@
                 <line x1="640" y1="175" x2="580" y2="175" class="line" />
                 <line x1="640" y1="195" x2="580" y2="195" class="line" />
                
-                <rect x="640" y="500" width="180" height="80" rx="5" class="box" />
-                <text x="730" y="525" text-anchor="middle" class="module-title">IR TX/RX</text>
-                <text x="650" y="555" class="pin-label">TX → 7</text>
-                <text x="650" y="575" class="pin-label">RX → 18</text>
-                <line x1="640" y1="555" x2="580" y2="555" class="line" />
-                <line x1="640" y1="575" x2="580" y2="575" class="line" />
-                <rect x="50" y="600" width="180" height="100" rx="5" class="box" />
-                <text x="140" y="625" text-anchor="middle" class="module-title">D-Pad Buttons</text>
-                <text x="60" y="655" class="pin-label">UP → 4</text>
-                <text x="60" y="675" class="pin-label">DOWN → 5</text>
-                <text x="60" y="695" class="pin-label">OK → 3</text>
-                <text x="60" y="715" class="pin-label">ESC → 6</text>
-                <line x1="230" y1="655" x2="320" y2="655" class="line" />
-                <line x1="230" y1="675" x2="320" y2="675" class="line" />
-                <line x1="230" y1="695" x2="320" y2="695" class="line" />
-                <line x1="230" y1="715" x2="320" y2="715" class="line" />
-                <text x="450" y="620" text-anchor="middle" fill="#808080" font-size="10">Общие шины: 3.3V, GND, SPI (SCK/MOSI/MISO)</text>
-                <text x="450" y="640" text-anchor="middle" fill="#808080" font-size="10">Все пины INPUT_PULLUP для кнопок</text>
-                <rect x="50" y="720" width="800" height="40" rx="3" fill="#0c0c0c" stroke="#333" />
-                <text x="70" y="745" fill="#00ff66" font-size="11">⚡ Все подключения проверять на соответствие реальной сборке. Лицензия MIT.</text>
+                <rect x="640" y="300" width="180" height="80" rx="5" class="box" />
+                <text x="730" y="325" text-anchor="middle" class="module-title">IR TX/RX</text>
+                <text x="650" y="355" class="pin-label">TX → 7</text>
+                <text x="650" y="375" class="pin-label">RX → 18</text>
+                <line x1="640" y1="355" x2="580" y2="355" class="line" />
+                <line x1="640" y1="375" x2="580" y2="375" class="line" />
+                <rect x="50" y="500" width="180" height="120" rx="5" class="box" />
+                <text x="140" y="525" text-anchor="middle" class="module-title">D-Pad Buttons</text>
+                <text x="60" y="555" class="pin-label">UP → 4</text>
+                <text x="60" y="575" class="pin-label">DOWN → 5</text>
+                <text x="60" y="595" class="pin-label">OK → 3</text>
+                <text x="60" y="615" class="pin-label">ESC → 6</text>
+                <line x1="230" y1="555" x2="320" y2="555" class="line" />
+                <line x1="230" y1="575" x2="320" y2="575" class="line" />
+                <line x1="230" y1="595" x2="320" y2="595" class="line" />
+                <line x1="230" y1="615" x2="320" y2="615" class="line" />
+                <text x="570" y="540" text-anchor="middle" fill="#808080" font-size="10">Общие шины: 3.3V, GND, SPI (SCK/MOSI/MISO)</text>
+                <text x="570" y="560" text-anchor="middle" fill="#808080" font-size="10">Все пины INPUT_PULLUP для кнопок</text>
+                <rect x="330" y="580" width="500" height="60" rx="3" fill="#0c0c0c" stroke="#333" />
+                <text x="350" y="600" fill="#00ff66" font-size="11">⚡ Все подключения проверять на соответствие реальной сборке.</text>
+                <text x="530" y="620" fill="#00ff66" font-size="11">Лицензия MIT.</text>
             </svg>
         </section>
     </main>

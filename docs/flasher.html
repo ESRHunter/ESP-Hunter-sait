@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP-Hunter — Веб-загрузчик прошивки</title>
+    <title>ESP-Hunter — Веб-загрузчик</title>
 
-    <!-- Подключаем библиотеку esptool-js для прошивки через Web Serial -->
+    <!-- Библиотеки для прошивки -->
     <script src="https://unpkg.com/esptool-js@0.1.3/dist/index.umd.js" defer></script>
-    <!-- Подключаем библиотеку для работы с бинарными данными -->
     <script src="https://cdn.jsdelivr.net/npm/axios@1.6.2/dist/axios.min.js" defer></script>
 
     <style>
         :root {
             --bg-color: #000000;
             --card-bg: #0c0c0c;
-            --card-hover: #111111;
             --accent: #00ff00;
             --accent-hover: #00cc00;
             --text: #ffffff;
@@ -40,10 +38,9 @@
             background-attachment: fixed;
             background-repeat: no-repeat;
             color: var(--text);
-            line-height: 1.6;
+            min-height: 100vh;
             padding-bottom: 60px;
             position: relative;
-            min-height: 100vh;
         }
 
         body::before {
@@ -78,6 +75,7 @@
             padding: 0 20px;
         }
 
+        /* Шапка */
         header {
             padding: 20px 0;
             position: sticky;
@@ -93,6 +91,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo {
@@ -114,8 +114,8 @@
             display: inline-block;
             background: transparent;
             color: var(--accent);
-            padding: 12px 28px;
-            border-radius: 0px;
+            padding: 10px 20px;
+            border-radius: 0;
             text-decoration: none;
             font-weight: 700;
             transition: all 0.2s;
@@ -123,20 +123,17 @@
             cursor: pointer;
             box-shadow: var(--glow);
             text-transform: uppercase;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .btn:hover {
             background: var(--accent);
             color: #000;
-            box-shadow: var(--glow), inset 0 0 15px #000;
         }
 
         .btn-secondary {
-            background: transparent;
             color: var(--text);
-            border: 2px solid var(--border);
-            margin-left: 10px;
+            border-color: var(--border);
             box-shadow: none;
         }
 
@@ -149,7 +146,7 @@
         .btn-danger {
             border-color: var(--danger);
             color: var(--danger);
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
+            box-shadow: 0 0 15px rgba(255,0,51,0.4);
         }
 
         .btn-danger:hover {
@@ -157,14 +154,19 @@
             color: #000;
         }
 
+        .btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Секция заголовка */
         .hero {
-            padding: 40px 0 30px;
+            padding: 30px 0 20px;
             text-align: center;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
             font-weight: 800;
             text-transform: uppercase;
         }
@@ -174,49 +176,61 @@
             text-shadow: var(--glow);
         }
 
-        .card {
+        .hero p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Карточка шагов */
+        .steps-card {
             padding: 30px;
             margin-bottom: 30px;
         }
 
-        .card h2 {
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
             color: var(--accent);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            font-size: 1.4rem;
+            margin-bottom: 15px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        .form-group {
+        .step-desc {
+            color: var(--text-dim);
             margin-bottom: 20px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-dim);
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="file"] {
-            width: 100%;
-            padding: 12px;
+        .flex-row .btn {
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
             background: #000;
             border: 1px solid var(--border);
             color: var(--text);
             font-family: inherit;
-            font-size: 1rem;
-            border-radius: 0;
-        }
-
-        .form-group input[type="file"] {
-            padding: 10px;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
+            width: 100%;
+            margin: 10px 0;
         }
 
         .status-box {
@@ -225,10 +239,10 @@
             padding: 15px;
             border: 1px solid var(--border);
             margin-top: 15px;
-            min-height: 60px;
-            white-space: pre-wrap;
+            min-height: 50px;
             font-size: 0.9rem;
-            max-height: 200px;
+            white-space: pre-wrap;
+            max-height: 150px;
             overflow-y: auto;
         }
 
@@ -241,11 +255,9 @@
             height: 20px;
             background: #111;
             border: 1px solid var(--border);
-            border-radius: 0;
-            overflow: hidden;
         }
 
-        .progress-bar .progress-fill {
+        .progress-fill {
             height: 100%;
             width: 0%;
             background: var(--accent);
@@ -256,18 +268,6 @@
             text-align: center;
             margin-top: 5px;
             color: var(--text-dim);
-        }
-
-        .flex-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-
-        .flex-row .btn {
-            flex: 1;
-            text-align: center;
         }
 
         .cursor {
@@ -288,9 +288,45 @@
             margin-top: 60px;
             text-align: center;
             color: var(--text-dim);
-            font-size: 0.9rem;
             border-top: 1px solid var(--border);
             padding-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Инструкция */
+        .instruction {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border-left: 3px solid var(--accent);
+        }
+
+        .instruction ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .instruction li {
+            padding: 4px 0;
+            color: var(--text-dim);
+        }
+
+        .instruction li strong {
+            color: var(--accent);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .flex-row .btn {
+                flex: 1 1 100%;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -309,166 +345,196 @@
     <main class="container">
         <section class="hero">
             <h1>ВЕБ-ЗАГРУЗЧИК <br><span>ESP-Hunter</span></h1>
-            <p>Прошивка устройства через браузер. Выберите источник прошивки и нажмите «Прошить».</p>
+            <p>Прошивка устройства в три шага. Подключите ESP32, выберите прошивку и нажмите «Прошить».</p>
         </section>
 
-        <section class="card glass" id="flasher-card">
-            <h2>Выбор прошивки</h2>
+        <!-- ОСНОВНАЯ КАРТОЧКА -->
+        <section class="glass steps-card" id="flasherCard">
 
-            <div class="form-group">
-                <label>Загрузить последнюю прошивку с GitHub (релиз)</label>
+            <!-- ШАГ 1: Подключение -->
+            <div class="step active" id="step1">
+                <div class="step-title">Шаг 1: Подключите ESP32</div>
+                <div class="step-desc">Нажмите кнопку ниже, чтобы выбрать COM-порт вашего устройства.</div>
                 <div class="flex-row">
-                    <input type="text" id="repoInput" value="ESRHunter/ESP-Hunter" placeholder="owner/repo" style="flex:2; padding:10px; background:#000; border:1px solid var(--border); color:var(--text);">
-                    <button class="btn" id="fetchReleaseBtn" style="flex:1;">Загрузить .bin</button>
+                    <button class="btn" id="connectBtn">🔌 Подключиться</button>
+                    <button class="btn btn-secondary" id="refreshBtn">🔄 Обновить порты</button>
                 </div>
-                <div style="margin-top:5px; font-size:0.8rem; color:var(--text-dim);">Используется последний релиз. Файл .bin должен быть в assets.</div>
+                <div class="status-box" id="connectStatus">Ожидание подключения...</div>
             </div>
 
-            <div class="form-group">
-                <label>Или выберите локальный файл .bin</label>
-                <input type="file" id="fileInput" accept=".bin">
-            </div>
-
-            <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn" id="connectBtn" style="flex:1;">🔌 Подключиться</button>
-                <button class="btn btn-danger" id="flashBtn" style="flex:1;" disabled>⚡ Прошить</button>
-                <button class="btn btn-secondary" id="resetBtn" style="flex:1;">🔄 Сброс</button>
-            </div>
-
-            <div class="status-box" id="status">Ожидание действий...</div>
-
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
+            <!-- ШАГ 2: Выбор прошивки -->
+            <div class="step" id="step2">
+                <div class="step-title">Шаг 2: Выберите прошивку</div>
+                <div class="step-desc">Выберите источник прошивки.</div>
+                <div class="flex-row" style="margin-bottom:10px;">
+                    <button class="btn" id="githubBtn" style="flex:2;">📦 Последняя с GitHub</button>
+                    <button class="btn btn-secondary" id="localBtn" style="flex:1;">📂 Свой .bin</button>
                 </div>
-                <div class="progress-text" id="progressText">0%</div>
+                <div id="fileArea" style="display:none;">
+                    <input type="file" id="fileInput" accept=".bin">
+                </div>
+                <div class="status-box" id="firmwareStatus">Прошивка не выбрана.</div>
+                <div class="flex-row" style="margin-top:15px;">
+                    <button class="btn" id="flashBtn" disabled>⚡ Прошить</button>
+                    <button class="btn btn-secondary" id="backBtn">← Назад</button>
+                </div>
             </div>
-        </section>
 
-        <section class="card glass">
-            <h2>Инструкция</h2>
-            <ul style="color:var(--text-dim); list-style-type: none; padding-left:0;">
-                <li>1. Подключите ESP32-S3 к компьютеру через USB.</li>
-                <li>2. Нажмите «Подключиться» и выберите COM-порт.</li>
-                <li>3. Загрузите прошивку (с GitHub или локально).</li>
-                <li>4. Нажмите «Прошить» и дождитесь завершения.</li>
-                <li>5. После прошивки устройство перезагрузится автоматически.</li>
-            </ul>
-            <p style="margin-top:10px; color:var(--accent);">Внимание: Прошивка через Web Serial работает в Chrome / Edge / Opera.</p>
+            <!-- ШАГ 3: Процесс прошивки -->
+            <div class="step" id="step3">
+                <div class="step-title">Шаг 3: Идёт прошивка</div>
+                <div class="step-desc" id="flashDesc">Подождите, не отключайте устройство.</div>
+                <div class="status-box" id="flashStatus">Начинаем...</div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+                <div class="flex-row" style="margin-top:15px;">
+                    <button class="btn btn-secondary" id="resetBtn" style="display:none;">🔄 Сброс</button>
+                    <button class="btn" id="doneBtn" style="display:none;">✅ Готово</button>
+                </div>
+            </div>
+
+            <!-- ИНСТРУКЦИЯ ВНИЗУ -->
+            <div class="instruction">
+                <ul>
+                    
+                    <li>🔹 <strong>Драйвер:</strong> для CH343P установите <a href="https://www.wch.cn/downloads/CH343SER_EXE.html" target="_blank" style="color:var(--accent);">CH343SER.EXE</a>.</li>
+                    <li>🔹 <strong>Режим загрузки:</strong> если прошивка не начинается, зажмите BOOT → RESET → отпустите BOOT.</li>
+                    <li>🔹 <strong>Браузер:</strong> используйте Chrome или Edge (поддержка Web Serial).</li>
+                </ul>
+            </div>
+
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 ESP-Hunter Project. Лицензия MIT.</p>
+            <p>&copy; 2026 ESP-Hunter Project. Лицензия MIT. <br><span style="color:var(--accent);">>_ System ready.</span></p>
         </div>
     </footer>
 
     <script>
         (function() {
-            // Глобальные переменные
-            let esptool = null;
-            let transport = null;
-            let selectedBinary = null;
-            let isConnected = false;
+            "use strict";
 
-            const statusDiv = document.getElementById('status');
+            // DOM-элементы
+            const connectBtn = document.getElementById('connectBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const connectStatus = document.getElementById('connectStatus');
+
+            const githubBtn = document.getElementById('githubBtn');
+            const localBtn = document.getElementById('localBtn');
+            const fileArea = document.getElementById('fileArea');
+            const fileInput = document.getElementById('fileInput');
+            const firmwareStatus = document.getElementById('firmwareStatus');
+            const flashBtn = document.getElementById('flashBtn');
+            const backBtn = document.getElementById('backBtn');
+
+            const flashStatus = document.getElementById('flashStatus');
+            const flashDesc = document.getElementById('flashDesc');
             const progressFill = document.getElementById('progressFill');
             const progressText = document.getElementById('progressText');
-
-            const connectBtn = document.getElementById('connectBtn');
-            const flashBtn = document.getElementById('flashBtn');
             const resetBtn = document.getElementById('resetBtn');
-            const fetchBtn = document.getElementById('fetchReleaseBtn');
-            const repoInput = document.getElementById('repoInput');
-            const fileInput = document.getElementById('fileInput');
+            const doneBtn = document.getElementById('doneBtn');
 
-            // Функция логирования
-            function log(msg) {
-                statusDiv.textContent = msg;
-                console.log(msg);
+            const steps = {
+                step1: document.getElementById('step1'),
+                step2: document.getElementById('step2'),
+                step3: document.getElementById('step3')
+            };
+
+            // Переменные состояния
+            let transport = null;
+            let espLoader = null;
+            let selectedBinary = null;
+            let firmwareSource = null; // 'github' or 'local'
+            let isConnected = false;
+
+            // Проверка поддержки Web Serial
+            if (!('serial' in navigator)) {
+                connectStatus.textContent = '⚠️ Ваш браузер не поддерживает Web Serial API. Используйте Chrome/Edge.';
+                connectBtn.disabled = true;
             }
 
-            function logAppend(msg) {
-                statusDiv.textContent += '\n' + msg;
-                statusDiv.scrollTop = statusDiv.scrollHeight;
-            }
+            // --- ШАГ 1: ПОДКЛЮЧЕНИЕ ---
 
-            // Функция обновления прогресса
-            function setProgress(percent, text) {
-                progressFill.style.width = Math.min(100, percent) + '%';
-                progressText.textContent = text || Math.round(percent) + '%';
-            }
-
-            // Подключение к устройству
             async function connect() {
                 try {
-                    if (typeof esptool === 'undefined') {
-                        await loadEsptool();
-                    }
                     if (transport) {
+                        // Если уже подключены – отключаем
                         await transport.close();
                         transport = null;
                         isConnected = false;
-                        log('Отключено');
                         connectBtn.textContent = '🔌 Подключиться';
+                        connectStatus.textContent = 'Отключено';
                         flashBtn.disabled = true;
                         return;
                     }
 
-                    // Запрос порта
+                    // Запрашиваем порт
                     const port = await navigator.serial.requestPort();
                     await port.open({ baudRate: 115200 });
 
-                    // Создаём транспорт для esptool
+                    // Импортируем esptool (если ещё не загружен)
+                    if (typeof esptool === 'undefined') {
+                        await loadEsptool();
+                    }
+
                     transport = new esptool.Transport(port);
-                    const espLoader = new esptool.ESPLoader(transport);
+                    espLoader = new esptool.ESPLoader(transport);
                     await espLoader.main();
 
                     isConnected = true;
                     connectBtn.textContent = '🔌 Отключиться';
+                    connectStatus.textContent = '✅ Подключено к ESP32-S3';
                     flashBtn.disabled = false;
-                    log('Подключено к ESP32-S3');
+                    // Переходим к шагу 2
+                    showStep(2);
+
                 } catch (err) {
-                    log('Ошибка подключения: ' + err.message);
+                    connectStatus.textContent = '❌ Ошибка: ' + err.message;
                     isConnected = false;
                     connectBtn.textContent = '🔌 Подключиться';
                     flashBtn.disabled = true;
                 }
             }
 
-            // Загрузка esptool-js, если не загружена
             function loadEsptool() {
                 return new Promise((resolve, reject) => {
                     if (typeof esptool !== 'undefined') {
                         resolve();
                         return;
                     }
-                    // Проверим, что скрипт уже подключен (но может не быть)
                     const script = document.createElement('script');
                     script.src = 'https://unpkg.com/esptool-js@0.1.3/dist/index.umd.js';
                     script.onload = () => {
-                        // После загрузки, глобальный объект esptool должен быть доступен
-                        if (typeof esptool !== 'undefined') {
-                            resolve();
-                        } else {
-                            reject(new Error('Не удалось загрузить esptool-js'));
-                        }
+                        if (typeof esptool !== 'undefined') resolve();
+                        else reject(new Error('Не удалось загрузить esptool-js'));
                     };
                     script.onerror = () => reject(new Error('Ошибка загрузки esptool-js'));
                     document.head.appendChild(script);
                 });
             }
 
-            // Загрузка бинарника с GitHub
-            async function fetchBinaryFromGitHub() {
-                const repo = repoInput.value.trim();
-                if (!repo || !repo.includes('/')) {
-                    log('Укажите репозиторий в формате owner/repo');
-                    return;
-                }
+            // --- ШАГ 2: ВЫБОР ПРОШИВКИ ---
 
-                log('Запрос последнего релиза...');
+            function showStep(num) {
+                for (let key in steps) {
+                    steps[key].classList.remove('active');
+                }
+                const stepMap = {1: 'step1', 2: 'step2', 3: 'step3'};
+                if (stepMap[num]) {
+                    document.getElementById(stepMap[num]).classList.add('active');
+                }
+            }
+
+            // Выбор прошивки с GitHub
+            async function fetchGitHubFirmware() {
+                const repo = 'ESRHunter/ESP-Hunter'; // можно сделать поле ввода, но для простоты зафиксируем
+                firmwareStatus.textContent = '⏳ Загрузка списка релизов...';
                 try {
                     const url = `https://api.github.com/repos/${repo}/releases/latest`;
                     const resp = await axios.get(url);
@@ -482,117 +548,154 @@
                         }
                     }
                     if (!binAsset) {
-                        log('В релизе не найден .bin файл.');
+                        firmwareStatus.textContent = '❌ В последнем релизе нет .bin файла.';
                         return;
                     }
-                    log(`Найден файл: ${binAsset.name}, загрузка...`);
-                    const downloadUrl = binAsset.browser_download_url;
-                    const binResp = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
-                    const buffer = binResp.data;
-                    selectedBinary = new Uint8Array(buffer);
-                    log(`Загружено ${selectedBinary.length} байт`);
-                    // Обновим интерфейс
+                    firmwareStatus.textContent = `⏳ Скачивание ${binAsset.name} ...`;
+                    const binResp = await axios.get(binAsset.browser_download_url, { responseType: 'arraybuffer' });
+                    selectedBinary = new Uint8Array(binResp.data);
+                    firmwareSource = 'github';
+                    firmwareStatus.textContent = `✅ Загружено: ${binAsset.name} (${selectedBinary.length} байт)`;
                     flashBtn.disabled = false;
                 } catch (err) {
-                    log('Ошибка загрузки с GitHub: ' + err.message);
+                    firmwareStatus.textContent = '❌ Ошибка загрузки с GitHub: ' + err.message;
                 }
             }
 
-            // Обработка локального файла
-            function handleFileSelect(event) {
+            // Локальный файл
+            function handleLocalFile(event) {
                 const file = event.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    const buffer = e.target.result;
-                    selectedBinary = new Uint8Array(buffer);
-                    log(`Загружен локальный файл: ${file.name} (${selectedBinary.length} байт)`);
+                    selectedBinary = new Uint8Array(e.target.result);
+                    firmwareSource = 'local';
+                    firmwareStatus.textContent = `✅ Загружен: ${file.name} (${selectedBinary.length} байт)`;
                     flashBtn.disabled = false;
+                };
+                reader.onerror = () => {
+                    firmwareStatus.textContent = '❌ Ошибка чтения файла.';
                 };
                 reader.readAsArrayBuffer(file);
             }
 
-            // Прошивка
-            async function flash() {
-                if (!isConnected) {
-                    log('Сначала подключитесь к устройству!');
-                    return;
-                }
-                if (!selectedBinary) {
-                    log('Нет загруженной прошивки!');
+            // Кнопка "Назад"
+            function goBack() {
+                showStep(1);
+            }
+
+            // --- ШАГ 3: ПРОШИВКА ---
+
+            async function startFlashing() {
+                if (!isConnected || !selectedBinary) {
+                    flashStatus.textContent = '❌ Нет подключения или прошивки.';
                     return;
                 }
 
                 flashBtn.disabled = true;
-                log('Начинаем прошивку...');
+                showStep(3);
+                flashStatus.textContent = '⏳ Начинаем прошивку...';
+                progressFill.style.width = '0%';
+                progressText.textContent = '0%';
 
                 try {
-                    // Получаем экземпляр ESPLoader
-                    const espLoader = new esptool.ESPLoader(transport);
-                    // Установка параметров чипа
-                    await espLoader.main();
-
-                    // Подготовка к записи
-                    const image = new esptool.ESPImage(selectedBinary, espLoader.chip);
+                    // Получаем объект ESPLoader (он уже есть)
                     const offset = 0x1000; // стандартный адрес для ESP32-S3
+
+                    const image = new esptool.ESPImage(selectedBinary, espLoader.chip);
 
                     // Прогресс
                     const progressHandler = (current, total) => {
                         const percent = (current / total) * 100;
-                        setProgress(percent, `${Math.round(percent)}% (${current}/${total})`);
+                        progressFill.style.width = Math.min(100, percent) + '%';
+                        progressText.textContent = Math.round(percent) + '%';
                     };
 
-                    // Запись
                     await espLoader.writeFlash(image, offset, undefined, progressHandler);
-                    log('Прошивка завершена успешно!');
-                    setProgress(100, 'Готово');
+
+                    flashStatus.textContent = '✅ Прошивка успешно завершена!';
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '100%';
+                    flashDesc.textContent = 'Устройство готово к работе.';
+
+                    // Показываем кнопки
+                    resetBtn.style.display = 'inline-block';
+                    doneBtn.style.display = 'inline-block';
+
                 } catch (err) {
-                    log('Ошибка прошивки: ' + err.message);
-                    setProgress(0, 'Ошибка');
+                    flashStatus.textContent = '❌ Ошибка прошивки: ' + err.message;
+                    flashDesc.textContent = 'Попробуйте повторить или проверьте подключение.';
                 } finally {
                     flashBtn.disabled = false;
                 }
             }
 
-            // Сброс устройства
+            // Сброс
             async function resetDevice() {
-                if (!isConnected) {
-                    log('Подключитесь сначала.');
-                    return;
-                }
+                if (!espLoader) return;
                 try {
-                    const espLoader = new esptool.ESPLoader(transport);
-                    await espLoader.main();
                     await espLoader.hardReset();
-                    log('Устройство перезагружено.');
+                    flashStatus.textContent = '🔄 Устройство перезагружено.';
                 } catch (err) {
-                    log('Ошибка сброса: ' + err.message);
+                    flashStatus.textContent = '❌ Ошибка сброса: ' + err.message;
                 }
             }
 
-            // Инициализация событий
+            // Кнопка "Готово" – возврат на главную или на шаг 1
+            function goDone() {
+                // Можно перезагрузить страницу или вернуться на шаг 1
+                showStep(1);
+                // Сбросить состояние
+                resetBtn.style.display = 'none';
+                doneBtn.style.display = 'none';
+                flashBtn.disabled = true;
+                // Очистить выбранную прошивку
+                selectedBinary = null;
+                firmwareStatus.textContent = 'Прошивка не выбрана.';
+                flashStatus.textContent = '';
+                progressFill.style.width = '0%';
+                progressText.textContent = '0%';
+            }
+
+            // --- ПОДКЛЮЧЕНИЕ СОБЫТИЙ ---
+
             connectBtn.addEventListener('click', connect);
-            flashBtn.addEventListener('click', flash);
-            resetBtn.addEventListener('click', resetDevice);
-            fetchBtn.addEventListener('click', fetchBinaryFromGitHub);
-            fileInput.addEventListener('change', handleFileSelect);
-
-            // Проверка поддержки Web Serial
-            if (!('serial' in navigator)) {
-                log('Ваш браузер не поддерживает Web Serial API. Используйте Chrome/Edge.');
-                connectBtn.disabled = true;
-            } else {
-                // Проверяем, загрузилась ли библиотека esptool
-                if (typeof esptool === 'undefined') {
-                    // Попытка загрузить скрипт
-                    loadEsptool().catch(err => log(err.message));
+            refreshBtn.addEventListener('click', async () => {
+                if (navigator.serial) {
+                    try {
+                        const ports = await navigator.serial.getPorts();
+                        if (ports.length > 0) {
+                            connectStatus.textContent = `Найдено ${ports.length} порт(ов). Нажмите "Подключиться".`;
+                        } else {
+                            connectStatus.textContent = 'Нет сохранённых портов. Подключите устройство.';
+                        }
+                    } catch (e) {}
                 }
-            }
+            });
 
-            // Обновление статуса при загрузке страницы
-            log('Загрузчик готов. Подключите ESP32 и нажмите "Подключиться".');
+            githubBtn.addEventListener('click', fetchGitHubFirmware);
+            localBtn.addEventListener('click', () => {
+                fileArea.style.display = (fileArea.style.display === 'none') ? 'block' : 'none';
+                if (fileArea.style.display === 'block') {
+                    firmwareStatus.textContent = 'Выберите файл .bin';
+                } else {
+                    firmwareStatus.textContent = 'Прошивка не выбрана.';
+                    selectedBinary = null;
+                    flashBtn.disabled = true;
+                }
+            });
+            fileInput.addEventListener('change', handleLocalFile);
+
+            flashBtn.addEventListener('click', startFlashing);
+            backBtn.addEventListener('click', goBack);
+            resetBtn.addEventListener('click', resetDevice);
+            doneBtn.addEventListener('click', goDone);
+
+            // Инициализация
+            showStep(1);
+            flashBtn.disabled = true;
+
         })();
     </script>
-
 </body>
 </html>
